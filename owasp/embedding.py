@@ -1,6 +1,6 @@
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
-from codescraper import CheatSheetScraper
+from scraper import CheatSheetScraper
 
 class OWASPEmbedding:
     def __init__(self):
