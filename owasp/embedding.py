@@ -1,23 +1,28 @@
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
-from scraper import CheatSheetScraper
+from sentence_transformers import SentenceTransformer
+import numpy as np
+import faiss
 
 class OWASPEmbedding:
-    def __init__(self):
-        self.vector_store = self.create_vector_store()
+    def __init__(self, model_name='paraphrase-MiniLM-L6-v2'):
+        self.model = SentenceTransformer(model_name)
+        self.vector_store, self.texts = self.create_vector_store()
 
-    def get_owasp_content(self):
-        scraper = CheatSheetScraper()
-        cheat_sheets = scraper.scrape_cheat_sheets()
-        content_list = [content for content in cheat_sheets.values()]
-        return content_list
-    
     def create_vector_store(self):
-        embeddings = OpenAIEmbeddings()
-        vector_store = FAISS.from_texts(self.get_owasp_content(), embeddings)
-        return vector_store
+        index = faiss.IndexFlatL2(self.model.get_sentence_embedding_dimension())
+        return index, []
 
-    def get_relevant_owasp_content(self, code_snippet):
-        query = f"Analyze this code for OWASP vulnerabilities related to error handling: {code_snippet}"
-        search_results = self.vector_store.similarity_search(query, k=2)
-        return " ".join([result['text'] for result in search_results])
+    def generate_embeddings(self, texts):
+        return np.array(self.model.encode(texts))
+
+    def add_to_vector_store(self, texts):
+        embeddings = self.generate_embeddings(texts)
+        self.vector_store.add(embeddings)
+        self.texts.extend(texts)
+
+    def search_in_vector_store(self, query, top_k=5):
+        if not self.vector_store.ntotal:
+            return [], []  
+        query_embedding = self.generate_embeddings([query])
+        distances, indices = self.vector_store.search(query_embedding, top_k)
+        results = [(self.texts[idx], dist) for idx, dist in zip(indices[0], distances[0]) if idx < len(self.texts)]
+        return results
