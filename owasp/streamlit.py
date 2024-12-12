@@ -2,30 +2,8 @@ import os
 import streamlit as st
 from owasp import OWASPCodeAnalyzer
 
-# Sidebar to input API Key
-# with st.sidebar:
-#     st.title("Settings")
-#     st.markdown("### :red[Enter your Cerebras API Key below]")
-#     CEREBRAS_API_KEY = st.text_input("Cerebras API Key:", type="password")
 
-# # Display welcome message and stop if no API key is provided
-# if not CEREBRAS_API_KEY:
-#     st.markdown(
-#         """
-#         ## Welcome to the OWASP Code Analysis Demo!
 
-#         This tool analyzes your code snippets and provides feedback based on OWASP error handling guidelines using Cerebras.
-
-#         To get started:
-#         1. :red[Enter your Cerebras API Key in the sidebar.]
-#         2. Paste a code snippet below for analysis.
-#         3. Click "Analyze" to get feedback on your code.
-#         """
-#     )
-#     st.stop()
-
-# Initialize OWASP Analyzer with the API Key
-CEREBRAS_API_KEY = "csk-nxrtnpm9f35vnd94me9ke49mhm5jyh92w3epkhje6ejpxte6"
 analyzer = OWASPCodeAnalyzer(api_key=CEREBRAS_API_KEY)
 
 class StreamlitApp:
