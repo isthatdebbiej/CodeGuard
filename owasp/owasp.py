@@ -13,10 +13,11 @@ class OWASPCodeAnalyzer:
     def generate_cerebras_analysis(self, code_snippet):
         relevant_content = self.get_relevant_owasp_content(code_snippet)
         prompt = (
-            f"Analyze the following code snippet based on the OWASP error handling guidelines:\n"
-            f"{relevant_content}\nCode snippet:\n{code_snippet}\n"
-            "Provide detailed feedback and suggestions for improvement."
-        )
+        f"Analyze the following code snippet based on the OWASP error handling guidelines:\n"
+        f"{relevant_content}\nCode snippet:\n{code_snippet}\n"
+        "Identify vulnerabilities and provide only the corrected and improved code as the output without any explanations, comments, or additional text. "
+        "Ensure the output is in the same programming language as the provided snippet."
+    )
         return self.cerebras_api.invoke(prompt)
 
     def get_relevant_owasp_content(self, code_snippet):
